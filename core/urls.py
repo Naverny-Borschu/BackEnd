@@ -50,4 +50,7 @@ urlpatterns = [
     path('auth/token/refresh/', TokenRefreshView.as_view(), name='token-refresh'),
     # Всі маршрути від роутера
     path('', include(router.urls)),
+
+
+    path('admin/stats/', admin.site.admin_view(admin_stats_view), name='stats'),
 ]
