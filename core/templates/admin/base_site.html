@@ -20,3 +20,8 @@
   </div>
 {% endblock %}
 
+{% block nav-global %}
+  {{ block.super }}
+  <a href="{% url 'admin:stats' %}" class="nav-global-item">Статистика</a>
+{% endblock %}
+
