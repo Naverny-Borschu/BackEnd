@@ -29,7 +29,7 @@ from .viewsets import (
     UserViewSet,
 )
 from django.contrib import admin
-from .admin_extra import admin_stats_view
+from .admin_extra import admin_stats_view, admin_analytics_view
 
 
 # Створення роутера для автоматичної реєстрації ViewSets
@@ -53,4 +53,5 @@ urlpatterns = [
     # Всі маршрути від роутера
     path('', include(router.urls)),
     path('admin/stats/', admin.site.admin_view(admin_stats_view), name='stats'),
+    path('admin/analytics/', admin.site.admin_view(admin_analytics_view), name='analytics'),
 ]

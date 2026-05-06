@@ -56,7 +56,7 @@ ROOT_URLCONF = 'naverny_borschu_api.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],  # Додати шляхи до шаблонів за потреби
+        'DIRS': [os.path.join(BASE_DIR, 'core/templates')],  # Додати шляхи до шаблонів за потреби
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
