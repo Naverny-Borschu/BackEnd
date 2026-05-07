@@ -164,15 +164,17 @@ class BorschViewSet(viewsets.ModelViewSet):
         """
         queryset = Borsch.objects.all().order_by('-overall_rating', 'name')
         
-        # Фільтр по закладу
+        # Фільтр по закладу (підтримка кількох значень через кому)
         place_id = self.request.query_params.get('place_id', None)
         if place_id:
-            queryset = queryset.filter(place_id=place_id)
+            place_ids = [pid.strip() for pid in place_id.split(',')]
+            queryset = queryset.filter(place_id__in=place_ids)
         
-        # Фільтр по типу м'яса
+        # Фільтр по типу м'яса (підтримка кількох значень через кому)
         meat_type = self.request.query_params.get('type_meat', None)
         if meat_type:
-            queryset = queryset.filter(type_meat=meat_type)
+            meat_types = [mt.strip() for mt in meat_type.split(',')]
+            queryset = queryset.filter(type_meat__in=meat_types)
         
         # Фільтр по ціні
         min_price = self.request.query_params.get('min_price', None)
