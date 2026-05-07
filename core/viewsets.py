@@ -110,10 +110,11 @@ class PlaceViewSet(viewsets.ModelViewSet):
         if city:
             queryset = queryset.filter(city__icontains=city)
         
-        # Фільтр по типу закладу
+        # Фільтр по типу закладу (підтримка кількох значень через кому)
         place_type = self.request.query_params.get('type', None)
         if place_type:
-            queryset = queryset.filter(type__code=place_type)
+            place_types = [ptype.strip() for ptype in place_type.split(',')]
+            queryset = queryset.filter(type__code__in=place_types)
         
         return queryset
 
