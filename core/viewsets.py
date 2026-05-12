@@ -93,7 +93,7 @@ class PlaceViewSet(viewsets.ModelViewSet):
         Параметри запиту:
         - search: пошук по назві або адресі
         - city: фільтр по місту
-        - type: фільтр по типу закладу (код типу)
+        - type: фільтр по типу закладу (код або назва типу)
         """
         queryset = Place.objects.all().order_by('name')
         
@@ -110,11 +110,20 @@ class PlaceViewSet(viewsets.ModelViewSet):
         if city:
             queryset = queryset.filter(city__icontains=city)
         
-        # Фільтр по типу закладу (підтримка кількох значень через кому)
+        # Фільтр по типу закладу (підтримка кодів, назв та масивів)
         place_type = self.request.query_params.get('type', None)
         if place_type:
-            place_types = [ptype.strip() for ptype in place_type.split(',')]
-            queryset = queryset.filter(type__code__in=place_types)
+            # Підтримка масивів та рядків
+            if place_type.startswith('[') and place_type.endswith(']'):
+                place_types = [ptype.strip().strip("'") for ptype in place_type[1:-1].split(',')]
+            else:
+                place_types = [ptype.strip() for ptype in place_type.split(',')]
+
+            # Фільтрація по коду або назві типу
+            queryset = queryset.filter(
+                models.Q(type__code__in=place_types) |
+                models.Q(type__label__in=place_types)
+            )
         
         return queryset
 

@@ -206,3 +206,33 @@ class TestCoreAPI(APITestCase):
         self.borsch.refresh_from_db()
         self.assertEqual(len(self.borsch.photo_urls), 1)
 
+    def test_filter_places_by_type_label(self):
+        """GET /api/places/?type=Бістро - фільтр по назві типу."""
+        bistro_type = PlaceType.objects.create(code="BISTRO", label="Бістро")
+        pub_type = PlaceType.objects.create(code="PUB", label="Паб")
+
+        Place.objects.create(name="Бістро 1", city="Київ", type=bistro_type)
+        Place.objects.create(name="Бістро 2", city="Львів", type=bistro_type)
+        Place.objects.create(name="Паб 1", city="Одеса", type=pub_type)
+
+        url = reverse("place-list")
+        response = self.client.get(url, {"type": "Бістро"}, format="json")
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(len(response.data["results"]), 2)
+
+    def test_filter_places_by_type_array(self):
+        """GET /api/places/?type=['Бістро','Паб'] - фільтр по масиву назв типів."""
+        bistro_type = PlaceType.objects.create(code="BISTRO", label="Бістро")
+        pub_type = PlaceType.objects.create(code="PUB", label="Паб")
+
+        Place.objects.create(name="Бістро 1", city="Київ", type=bistro_type)
+        Place.objects.create(name="Бістро 2", city="Львів", type=bistro_type)
+        Place.objects.create(name="Паб 1", city="Одеса", type=pub_type)
+
+        url = reverse("place-list")
+        response = self.client.get(url, {"type": "['Бістро','Паб']"}, format="json")
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(len(response.data["results"]), 3)
+
