@@ -211,9 +211,35 @@ class TestCoreAPI(APITestCase):
         bistro_type = PlaceType.objects.create(code="BISTRO", label="Бістро")
         pub_type = PlaceType.objects.create(code="PUB", label="Паб")
 
-        Place.objects.create(name="Бістро 1", city="Київ", type=bistro_type)
-        Place.objects.create(name="Бістро 2", city="Львів", type=bistro_type)
-        Place.objects.create(name="Паб 1", city="Одеса", type=pub_type)
+        Place.objects.create(
+            name="Бістро 1",
+            address="Адреса 1",
+            location_lat=Decimal("50.450100"),
+            location_lng=Decimal("30.523400"),
+            country="Україна",
+            city="Київ",
+            type=bistro_type,
+        )
+
+        Place.objects.create(
+            name="Бістро 2",
+            address="Адреса 2",
+            location_lat=Decimal("49.839700"),
+            location_lng=Decimal("24.029700"),
+            country="Україна",
+            city="Львів",
+            type=bistro_type,
+        )
+
+        Place.objects.create(
+            name="Паб 1",
+            address="Адреса 3",
+            location_lat=Decimal("46.482500"),
+            location_lng=Decimal("30.723300"),
+            country="Україна",
+            city="Одеса",
+            type=pub_type,
+        )
 
         url = reverse("place-list")
         response = self.client.get(url, {"type": "Бістро"}, format="json")
@@ -221,17 +247,48 @@ class TestCoreAPI(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(len(response.data["results"]), 2)
 
+
     def test_filter_places_by_type_array(self):
         """GET /api/places/?type=['Бістро','Паб'] - фільтр по масиву назв типів."""
         bistro_type = PlaceType.objects.create(code="BISTRO", label="Бістро")
         pub_type = PlaceType.objects.create(code="PUB", label="Паб")
 
-        Place.objects.create(name="Бістро 1", city="Київ", type=bistro_type)
-        Place.objects.create(name="Бістро 2", city="Львів", type=bistro_type)
-        Place.objects.create(name="Паб 1", city="Одеса", type=pub_type)
+        Place.objects.create(
+            name="Бістро 1",
+            address="Адреса 1",
+            location_lat=Decimal("50.450100"),
+            location_lng=Decimal("30.523400"),
+            country="Україна",
+            city="Київ",
+            type=bistro_type,
+        )
+
+        Place.objects.create(
+            name="Бістро 2",
+            address="Адреса 2",
+            location_lat=Decimal("49.839700"),
+            location_lng=Decimal("24.029700"),
+            country="Україна",
+            city="Львів",
+            type=bistro_type,
+        )
+
+        Place.objects.create(
+            name="Паб 1",
+            address="Адреса 3",
+            location_lat=Decimal("46.482500"),
+            location_lng=Decimal("30.723300"),
+            country="Україна",
+            city="Одеса",
+            type=pub_type,
+        )
 
         url = reverse("place-list")
-        response = self.client.get(url, {"type": "['Бістро','Паб']"}, format="json")
+        response = self.client.get(
+            url,
+            {"type": "['Бістро','Паб']"},
+            format="json",
+        )
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(len(response.data["results"]), 3)
