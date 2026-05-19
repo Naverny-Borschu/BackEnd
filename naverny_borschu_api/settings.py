@@ -41,6 +41,9 @@ INSTALLED_APPS = [
 # Middleware обробники запитів
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    # WhiteNoise віддає /static/* безпосередньо з staticfiles/ у production
+    # (з DEBUG=False Django сам статику не сервить, а nginx тільки проксіює).
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
